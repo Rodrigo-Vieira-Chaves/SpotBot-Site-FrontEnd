@@ -22,8 +22,8 @@ function Input (props: PropTypes)
             readOnly={Boolean(props.isReadOnly)}
             disabled={Boolean(props.isDisabled)}
             onChange={props.InputOnChange}
-            className={`w-full border-solid border-2 border-[#7194FF] rounded placeholder:text-[#727272] 
-                        placeholder:text-base disabled:bg-[#7194FF]  disabled:text-[#727272] p-1 pl-2 
+            className={`w-full text-black border-solid border-2 border-[#7194FF] rounded placeholder:text-[#727272] 
+                        placeholder:text-base disabled:bg-[#7194FF] disabled:text-[#727272] p-1 pl-2 
                         ${props.className ? props.className : ''}`}
             placeholder={props.placeholder}
         />

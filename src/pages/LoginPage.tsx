@@ -1,23 +1,26 @@
-import { ModalData, ModalReferenceType } from '../components/Modal';
-import { useRef, useState } from 'react';
+import { Modal, ModalData, ModalReferenceType } from '../components/Modal';
+import { useContext, useRef, useState } from 'react';
 import { Button } from '../components/Button';
 import { Footer } from '../components/Footer';
 import { FormsBox } from '../components/FormsBox';
 import { InputReferenceType } from '../components/Inputs/InputReferenceType';
+import { LoginInput } from '../components/Inputs/LoginInput';
 import { MainBackground } from '../components/MainBackground';
-import { NameInput } from '../components/Inputs/NameInput';
 import { PasswordInput } from '../components/Inputs/PasswordInput';
 import { SpotBotSiteLogo } from '../components/Images/SpotBotSiteLogo';
 import { Title } from '../components/Title';
-import { createAccount } from '../apiCalls/createAccount';
+import { UserDataContext } from '../providers/UserDataProvider';
+import { authenticateLogin } from '../apiCalls/authenticateLogin';
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage ()
 {
+    const navigate = useNavigate();
+
+    const userInfo = useContext(UserDataContext);
+
     const modalRef = useRef({} as ModalReferenceType);
     const nameInputRef = useRef({} as InputReferenceType);
-    const birthdayInputRef = useRef({} as InputReferenceType);
-    const cpfInputRef = useRef({} as InputReferenceType);
-    const emailInputRef = useRef({} as InputReferenceType);
     const passwordInputRef = useRef({} as InputReferenceType);
 
     const [ modalData, setModalData ] = useState({} as ModalData);
@@ -29,47 +32,41 @@ function LoginPage ()
 
         if (!(nameValid && passwordValid)) return;
 
-        const result = await createAccount(
+        const result = await authenticateLogin(
             nameInputRef.current.value,
-            birthdayInputRef.current.value.replaceAll('/', '-'),
-            emailInputRef.current.value,
-            cpfInputRef.current.value,
             passwordInputRef.current.value
         );
 
-        if (result.success)
+        if (!result.success)
         {
             setModalData(
                 {
-                    title: '',
-                    description: 'Uma nova conta foi criada para esse cliente!',
-                    confirmButtonLabel: 'Ok',
-                    isErrorModal: true,
-                }
-            );
-        }
-        else
-        {
-            setModalData(
-                {
-                    title: '',
+                    title: 'Error',
                     description: result.message,
                     confirmButtonLabel: 'Ok',
-                    isErrorModal: true,
+                    isOneButtonModal: true,
                 }
             );
+
+            modalRef.current.setShowModal(true);
+
+            return;
         }
 
-        modalRef.current.setShowModal(true);
+        userInfo.setUserLogged(result.data.userName);
+
+        navigate('/main/bots');
     }
 
     return (
         <MainBackground className="justify-between">
+            <Modal reference={modalRef} title={modalData.title} isOneButtonModal={modalData.isOneButtonModal} confirmButtonLabel={modalData.confirmButtonLabel}
+                description={modalData.description} onClick={modalData.onClick} />
             <SpotBotSiteLogo />
             <div className="flex justify-center items-center w-full mt-10">
                 <FormsBox>
                     <Title className="mb-10" title="Login"/>
-                    <NameInput className="mb-5" reference={nameInputRef} placeholder="Login" />
+                    <LoginInput className="mb-5" reference={nameInputRef} placeholder="Login" />
                     <PasswordInput reference={passwordInputRef} placeholder="Password" />
                     <Button className="mt-16" label="Enter" onClick={executeLogin}></Button>
                 </FormsBox>

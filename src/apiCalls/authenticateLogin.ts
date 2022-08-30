@@ -1,21 +1,16 @@
-async function createAccount (name: string, birthday: string, email: string, cpf: string, password: string)
+async function authenticateLogin (userName: string, password: string)
 {
     const body =
     {
-        client:
-            {
-                name,
-                birthday,
-                email,
-                cpf
-            },
+        userName,
         password
     };
 
     const fetchResponse = await fetch(
-        'http://localhost:8000/createAccount',
+        'http://localhost:8000/authenticateLogin',
         {
             method: 'POST',
+            credentials: 'include',
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         }
@@ -26,4 +21,4 @@ async function createAccount (name: string, birthday: string, email: string, cpf
     return responseJson;
 }
 
-export { createAccount };
+export { authenticateLogin };

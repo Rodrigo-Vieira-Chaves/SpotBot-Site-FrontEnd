@@ -6,7 +6,7 @@ import { InputReferenceType } from '../components/Inputs/InputReferenceType';
 import { OutletBackground } from '../components/OutletBackground';
 import { PasswordInput } from '../components/Inputs/PasswordInput';
 import { Title } from '../components/Title';
-import { createAccount } from '../apiCalls/createAccount';
+import { createLogin } from '../apiCalls/createLogin';
 
 function ProfilePage ()
 {
@@ -34,7 +34,7 @@ function ProfilePage ()
             return;
         }
 
-        const result = await createAccount(
+        const result = await createLogin(
             nameInputRef.current.value,
             birthdayInputRef.current.value.replaceAll('/', '-'),
             emailInputRef.current.value,
@@ -49,7 +49,7 @@ function ProfilePage ()
                     title: '',
                     description: 'Uma nova conta foi criada para esse cliente!',
                     confirmButtonLabel: 'Ok',
-                    isErrorModal: true,
+                    isOneButtonModal: true,
                 }
             );
         }
@@ -60,7 +60,7 @@ function ProfilePage ()
                     title: '',
                     description: result.message,
                     confirmButtonLabel: 'Ok',
-                    isErrorModal: true,
+                    isOneButtonModal: true,
                 }
             );
         }

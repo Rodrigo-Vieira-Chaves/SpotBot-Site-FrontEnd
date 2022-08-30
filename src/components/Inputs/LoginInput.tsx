@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import { Input } from './Input';
 import { InputBox } from './InputBox';
 import { InputReferenceType } from './InputReferenceType';
-import { nameMask } from '../../masks/nameMask';
+import { loginMask } from '../../masks/loginMask';
 
 interface PropTypes
 {
@@ -12,34 +12,34 @@ interface PropTypes
     reference?: React.MutableRefObject<InputReferenceType>;
 }
 
-function NameInput (props: PropTypes)
+function LoginInput (props: PropTypes)
 {
     const [ value, setValue ] = useState('');
     const inputSubMessageRef = useRef({} as ReferenceInputSubMessageType);
 
-    function nameInputOnChange (event: React.ChangeEvent<HTMLInputElement>)
+    function loginInputOnChange (event: React.ChangeEvent<HTMLInputElement>)
     {
-        setValue(nameMask(event.target.value));
+        setValue(loginMask(event.target.value));
     }
 
-    function isNameValid ()
+    function isLoginValid ()
     {
-        const condition = (/^[A-ZÀ-Ÿ][A-zÀ-ÿ']+\s([A-zÀ-ÿ']\s?)*[A-ZÀ-Ÿ][A-zÀ-ÿ']+$/).test(value);
+        const condition = (/^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/).test(value);
 
         if (condition) inputSubMessageRef.current.setNormalSubMessage('');
-        else inputSubMessageRef.current.setErrorSubMessage('Nome do usuário deve possuir nome e sobrenome e não pode ter números ou caracteres especiais');
+        else inputSubMessageRef.current.setErrorSubMessage('Nome do usuário deve ser de 8 a 20 caracteres utilizando apenas letras, dígitos, underscore ou ponto.');
 
         return condition;
     }
 
-    if (props?.reference) props.reference.current = { value, isValid: isNameValid, setValue };
+    if (props?.reference) props.reference.current = { value, isValid: isLoginValid, setValue };
 
     return (
         <InputBox className={`${props?.className ? props.className : ''}`}>
-            <Input type="text" initialValue={value} maxLength={50} placeholder={props.placeholder ? props.placeholder : 'Digite seu Nome'} InputOnChange={nameInputOnChange} />
+            <Input type="text" initialValue={value} maxLength={50} placeholder={props.placeholder ? props.placeholder : 'Digite seu Login'} InputOnChange={loginInputOnChange} />
             <InputSubMessage reference={inputSubMessageRef} />
         </InputBox>
     );
 }
 
-export { NameInput };
+export { LoginInput };

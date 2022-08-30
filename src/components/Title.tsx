@@ -1,13 +1,14 @@
 interface PropTypes
 {
     title: string;
+    id?: string;
     className?: string;
 }
 
 function Title (props: PropTypes)
 {
     return (
-        <h1 className={`text-[#7194FF] font-bold text-5xl text-center ${props.className ? props.className : ''}`}>{props.title}</h1>
+        <h2 id={props.id} className={`text-[#7194FF] font-bold text-5xl text-center ${props.className ? props.className : ''}`}>{props.title}</h2>
     );
 }
 

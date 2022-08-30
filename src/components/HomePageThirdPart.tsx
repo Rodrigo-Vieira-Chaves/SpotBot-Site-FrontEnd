@@ -4,7 +4,7 @@ function HomePageThirdPart ()
 {
     return (
         <>
-            <Title title="Frequently Asked Questions" className="w-full mt-52" />
+            <Title id="FAQ" title="Frequently Asked Questions" className="w-full mt-52" />
             <div className="flex justify-around items-center gap-28 w-full mt-16">
                 <div className="flex flex-col gap-20 w-1/2 h-full text-center">
                     <div className="flex flex-col gap-4 w-full h-full">

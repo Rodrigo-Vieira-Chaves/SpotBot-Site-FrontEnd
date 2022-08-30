@@ -1,70 +1,36 @@
 import { createContext, useState } from 'react';
-import { authenticateUser } from '../apiCalls/authenticateUser';
-
-interface ClientDTO
-{
-    clientID?: string;
-    name: string;
-    birthday: string;
-    email: string;
-    cpf: string;
-}
-
-interface AccountDTO
-{
-    accountID?: string;
-    clientID?: string;
-    branch: number;
-    branchDigit: number;
-    accountNumber: number;
-    accountNumberDigit: number;
-    password?: string;
-    balance?: number;
-}
-
-interface UserInfo
-{
-    client: ClientDTO;
-    account: AccountDTO;
-    token: string;
-}
+import { checkLogin } from '../apiCalls/checkLogin';
 
 interface UserDataProps
 {
-    isLogged: boolean;
-    userLogged: UserInfo;
-    setUserLogged: (value: UserInfo) => void;
-    updateUserLogged: () => Promise<void>;
-    lastTransaction: any;
-    setLastTransaction: (value: any) => void;
+    isLogged: () => Promise<boolean>;
+    userLogged: string;
+    setUserLogged: (userName: string) => void;
 }
 
 const UserDataContext = createContext({} as UserDataProps);
 
 function UserDataProvider (props: { children: React.ReactNode })
 {
-    const [ userLogged, setUserLogged ] = useState({} as UserInfo);
-    const [ lastTransaction, setLastTransaction ] = useState({} as any);
+    const [ userLogged, setUserLogged ] = useState('');
 
-    async function updateUserLogged ()
+    async function isLogged ()
     {
-        if (!userLogged) return;
+        if (userLogged) return true;
 
-        const result = await authenticateUser(userLogged.client.cpf, userLogged.account.password as string);
-        result.data.account.password = userLogged.account.password;
-        setUserLogged(result.data);
+        const result = await checkLogin();
+        if (result.success) setUserLogged(result.data.payload);
+
+        return result.success as boolean;
     }
 
     return (
         <UserDataContext.Provider value=
             {
                 {
-                    isLogged: Boolean(Object.keys(userLogged).length),
+                    isLogged,
                     userLogged,
                     setUserLogged,
-                    updateUserLogged,
-                    lastTransaction,
-                    setLastTransaction
                 } as UserDataProps
             }>
             {props.children}
@@ -73,4 +39,4 @@ function UserDataProvider (props: { children: React.ReactNode })
 }
 
 export { UserDataProvider, UserDataContext };
-export type { UserDataProps, UserInfo };
+export type { UserDataProps };

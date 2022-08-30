@@ -3,7 +3,6 @@ import { useRef, useState } from 'react';
 import { Input } from './Input';
 import { InputBox } from './InputBox';
 import { InputReferenceType } from './InputReferenceType';
-import { birthdayMask } from '../../masks/passwordMask';
 
 interface PropTypes
 {
@@ -14,23 +13,22 @@ interface PropTypes
 
 function PasswordInput (props: PropTypes)
 {
-    const minPasswordLength = 4;
-    const maxPasswordLength = 8;
+    const maxPasswordLength = 10;
 
     const [ value, setValue ] = useState('');
     const inputSubMessageRef = useRef({} as ReferenceInputSubMessageType);
 
     function passwordInputOnChange (event: React.ChangeEvent<HTMLInputElement>)
     {
-        setValue(birthdayMask(event.target.value));
+        setValue(event.target.value);
     }
 
     function isPasswordValid ()
     {
-        const condition = value.length >= minPasswordLength && value.length <= maxPasswordLength;
+        const condition = (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%¨&*?])[A-Za-z\d!@#$%¨&*?]{8,10}$/).test(value);
 
         if (condition) inputSubMessageRef.current.setNormalSubMessage('');
-        else inputSubMessageRef.current.setErrorSubMessage(`Favor digitar uma senha de ${minPasswordLength} a ${maxPasswordLength} dígitos`);
+        else inputSubMessageRef.current.setErrorSubMessage('Senha deve possuir de 8 a 10 caracteres, começando por letra maiúscula, conter pelo menos um número e um caracter especial.');
 
         return condition;
     }

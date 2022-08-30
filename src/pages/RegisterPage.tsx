@@ -1,23 +1,23 @@
-import { ModalData, ModalReferenceType } from '../components/Modal';
+import { Modal, ModalData, ModalReferenceType } from '../components/Modal';
 import { useRef, useState } from 'react';
 import { Button } from '../components/Button';
 import { Footer } from '../components/Footer';
 import { FormsBox } from '../components/FormsBox';
 import { InputReferenceType } from '../components/Inputs/InputReferenceType';
+import { LoginInput } from '../components/Inputs/LoginInput';
 import { MainBackground } from '../components/MainBackground';
-import { NameInput } from '../components/Inputs/NameInput';
 import { PasswordInput } from '../components/Inputs/PasswordInput';
 import { SpotBotSiteLogo } from '../components/Images/SpotBotSiteLogo';
 import { Title } from '../components/Title';
-import { createAccount } from '../apiCalls/createAccount';
+import { createLogin } from '../apiCalls/createLogin';
+import { useNavigate } from 'react-router-dom';
 
 function RegisterPage ()
 {
+    const navigate = useNavigate();
+
     const modalRef = useRef({} as ModalReferenceType);
     const nameInputRef = useRef({} as InputReferenceType);
-    const birthdayInputRef = useRef({} as InputReferenceType);
-    const cpfInputRef = useRef({} as InputReferenceType);
-    const emailInputRef = useRef({} as InputReferenceType);
     const passwordInputRef = useRef({} as InputReferenceType);
     const passwordConfirmationInputRef = useRef({} as InputReferenceType);
 
@@ -38,11 +38,8 @@ function RegisterPage ()
             return;
         }
 
-        const result = await createAccount(
+        const result = await createLogin(
             nameInputRef.current.value,
-            birthdayInputRef.current.value.replaceAll('/', '-'),
-            emailInputRef.current.value,
-            cpfInputRef.current.value,
             passwordInputRef.current.value
         );
 
@@ -51,9 +48,10 @@ function RegisterPage ()
             setModalData(
                 {
                     title: '',
-                    description: 'Uma nova conta foi criada para esse cliente!',
-                    confirmButtonLabel: 'Ok',
-                    isErrorModal: true,
+                    description: 'Your account was created successfully.',
+                    confirmButtonLabel: 'Go to login',
+                    isOneButtonModal: true,
+                    onClick: () => navigate('/login')
                 }
             );
         }
@@ -61,10 +59,10 @@ function RegisterPage ()
         {
             setModalData(
                 {
-                    title: '',
+                    title: 'Warning',
                     description: result.message,
                     confirmButtonLabel: 'Ok',
-                    isErrorModal: true,
+                    isOneButtonModal: true,
                 }
             );
         }
@@ -74,11 +72,13 @@ function RegisterPage ()
 
     return (
         <MainBackground className="justify-between">
+            <Modal reference={modalRef} title={modalData.title} isOneButtonModal={modalData.isOneButtonModal} confirmButtonLabel={modalData.confirmButtonLabel}
+                description={modalData.description} onClick={modalData.onClick} />
             <SpotBotSiteLogo />
             <div className="flex justify-center items-center w-full mt-10">
                 <FormsBox>
                     <Title className="mb-10" title="Sign Up"/>
-                    <NameInput className="mb-5" reference={nameInputRef} placeholder="Login" />
+                    <LoginInput className="mb-5" reference={nameInputRef} placeholder="Login" />
                     <PasswordInput className="mb-5" reference={passwordInputRef} placeholder="Password" />
                     <PasswordInput placeholder="Confirm Password" reference={passwordConfirmationInputRef} />
                     <Button className="mt-16" label="Create Account" onClick={executeRegistration}></Button>
