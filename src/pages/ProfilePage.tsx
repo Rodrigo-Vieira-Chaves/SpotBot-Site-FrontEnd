@@ -1,53 +1,48 @@
-import { ModalData, ModalReferenceType } from '../components/Modal';
-import { useRef, useState } from 'react';
+import { Modal, ModalData, ModalReferenceType } from '../components/Modal';
+import { useContext, useRef, useState } from 'react';
 import { Button } from '../components/Button';
 import { FormsBox } from '../components/FormsBox';
 import { InputReferenceType } from '../components/Inputs/InputReferenceType';
 import { OutletBackground } from '../components/OutletBackground';
 import { PasswordInput } from '../components/Inputs/PasswordInput';
 import { Title } from '../components/Title';
-import { createLogin } from '../apiCalls/createLogin';
+import { UserDataContext } from '../providers/UserDataProvider';
+import { changePassword } from '../apiCalls/changePassword';
 
 function ProfilePage ()
 {
+    const userInfo = useContext(UserDataContext);
+
     const modalRef = useRef({} as ModalReferenceType);
-    const nameInputRef = useRef({} as InputReferenceType);
-    const birthdayInputRef = useRef({} as InputReferenceType);
-    const cpfInputRef = useRef({} as InputReferenceType);
-    const emailInputRef = useRef({} as InputReferenceType);
-    const passwordInputRef = useRef({} as InputReferenceType);
-    const passwordConfirmationInputRef = useRef({} as InputReferenceType);
+    const currentPasswordInputRef = useRef({} as InputReferenceType);
+    const newPasswordInputRef = useRef({} as InputReferenceType);
+    const newPasswordConfirmationInputRef = useRef({} as InputReferenceType);
 
     const [ modalData, setModalData ] = useState({} as ModalData);
 
-    async function executeLogin ()
+    async function executePasswordChange ()
     {
-        const passwordValid = passwordInputRef.current.isValid();
-        const passwordConfirmationValid = passwordConfirmationInputRef.current.isValid();
+        const currentPasswordValid = currentPasswordInputRef.current.isValid();
+        const newPasswordValid = newPasswordInputRef.current.isValid();
+        const newPasswordConfirmationValid = newPasswordConfirmationInputRef.current.isValid();
 
-        if (!(passwordValid && passwordConfirmationValid)) return;
+        if (!(currentPasswordValid && newPasswordValid && newPasswordConfirmationValid)) return;
 
-        if (!(passwordInputRef.current.value === passwordConfirmationInputRef.current.value))
+        if (!(newPasswordInputRef.current.value === newPasswordConfirmationInputRef.current.value))
         {
-            passwordConfirmationInputRef.current.inputSubMessageRef?.current.setErrorSubMessage('As senhas devem ser iguais');
+            newPasswordConfirmationInputRef.current.inputSubMessageRef?.current.setErrorSubMessage('As senhas devem ser iguais');
 
             return;
         }
 
-        const result = await createLogin(
-            nameInputRef.current.value,
-            birthdayInputRef.current.value.replaceAll('/', '-'),
-            emailInputRef.current.value,
-            cpfInputRef.current.value,
-            passwordInputRef.current.value
-        );
+        const result = await changePassword(userInfo.userLogged, currentPasswordInputRef.current.value, newPasswordInputRef.current.value );
 
         if (result.success)
         {
             setModalData(
                 {
                     title: '',
-                    description: 'Uma nova conta foi criada para esse cliente!',
+                    description: 'Password changed successfully.',
                     confirmButtonLabel: 'Ok',
                     isOneButtonModal: true,
                 }
@@ -57,7 +52,7 @@ function ProfilePage ()
         {
             setModalData(
                 {
-                    title: '',
+                    title: 'Error',
                     description: result.message,
                     confirmButtonLabel: 'Ok',
                     isOneButtonModal: true,
@@ -69,16 +64,16 @@ function ProfilePage ()
     }
 
     return (
-        <OutletBackground>
-            <Title title="Hello User"/>
-            <div className="flex justify-center items-center w-full mt-10">
-                <FormsBox>
-                    <Title className="mb-10" title="Change Password"/>
-                    <PasswordInput className="mb-5" reference={passwordInputRef} placeholder="Password" />
-                    <PasswordInput placeholder="Confirm Password" reference={passwordConfirmationInputRef} />
-                    <Button className="mt-16" label="Change" onClick={executeLogin}></Button>
-                </FormsBox>
-            </div>
+        <OutletBackground className="overflow-y-auto">
+            <Modal reference={modalRef} title={modalData.title} isOneButtonModal={modalData.isOneButtonModal} confirmButtonLabel={modalData.confirmButtonLabel}
+                description={modalData.description} onClick={modalData.onClick} />
+            <p className="text-[#7194FF] font-bold text-base mb-3">Change Password</p>
+            <FormsBox>
+                <PasswordInput reference={currentPasswordInputRef} placeholder="Current Password" />
+                <PasswordInput reference={newPasswordInputRef} placeholder="New Password" />
+                <PasswordInput reference={newPasswordConfirmationInputRef} placeholder="Confirm new Password" />
+                <Button className="mt-2.5" label="Change" onClick={executePasswordChange}></Button>
+            </FormsBox>
         </OutletBackground>
     );
 }

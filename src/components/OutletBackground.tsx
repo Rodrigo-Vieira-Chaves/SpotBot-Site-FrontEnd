@@ -7,7 +7,7 @@ interface PropTypes
 function OutletBackground (props?: PropTypes)
 {
     return (
-        <div className={`flex flex-col justify-center items-center w-full h-full border-4 border-[#41525A] p-9 ${props?.className ? props.className : ''}`}>
+        <div className={`flex flex-col justify-start items-center w-full h-full border-4 border-[#41525A] p-4 ${props?.className ? props.className : ''}`}>
             {props?.children}
         </div>
     );

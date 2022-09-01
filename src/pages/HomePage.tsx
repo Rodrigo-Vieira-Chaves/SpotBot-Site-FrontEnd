@@ -8,7 +8,7 @@ import { MainBackground } from '../components/MainBackground';
 function HomePage ()
 {
     return (
-        <MainBackground>
+        <MainBackground className="overflow-y-auto">
             <HomePageFirstPart />
             <HomePageSecondPart />
             <HomePageThirdPart />

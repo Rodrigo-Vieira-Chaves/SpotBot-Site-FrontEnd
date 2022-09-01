@@ -1,10 +1,12 @@
+/* eslint-disable max-len */
 /* eslint-disable no-nested-ternary */
-import { Navigate, Outlet } from 'react-router-dom';
+import { NavLink, Navigate, Outlet } from 'react-router-dom';
 import { useContext, useState } from 'react';
-import { Button } from '../components/Button';
 import { Icon } from '../components/Icon';
+import { LogoutIcon } from '../components/Images/LogoutIcon';
 import { MainBackground } from '../components/MainBackground';
 import { SpotBotSiteLogo } from '../components/Images/SpotBotSiteLogo';
+import { Title } from '../components/Title';
 import { UserDataContext } from '../providers/UserDataProvider';
 import { logout } from '../apiCalls/logout';
 
@@ -30,19 +32,23 @@ function MainPage ()
 
     return (
         isLogged === 'true'
-            ? <MainBackground className="gap-16">
-                <div className="flex justify-between items-center w-full">
-                    <SpotBotSiteLogo />
-                    <Button label="Logout" onClick={executeLogout} />
-                </div>
-                <div className="flex justify-between items-start w-full">
-                    <ul className="flex flex-col justify-center items-start gap-16 w-1/5 text-2xl">
-                        <li className="flex justify-center items-center"><Icon iconName="IdentificationCard" color="#7194FF" weight={false} size={48} />My account</li>
-                        <li className="flex justify-center items-center"><Icon iconName="Robot" color="#7194FF" weight={false} size={48} />Bots</li>
-                        <li className="flex justify-center items-center"><Icon iconName="Wallet" color="#7194FF" weight={false} size={48} />Billing</li>
+            ? <MainBackground className="lg:flex-row gap-8">
+                <div className="flex flex-col w-full lg:w-1/5 gap-8 lg:gap-16">
+                    <div className="flex lg:flex-col justify-between items-center w-full h-full gap-2">
+                        <div className="w-1/3 lg:hidden"></div>
+                        <Title title={`${userInfo.userLogged}`} />
+                        <div className="flex justify-center items-center gap-1 w-1/3 lg:w-full" onClick={executeLogout}>
+                            <LogoutIcon className="w-7 h-7" />
+                            <p>Logout</p>
+                        </div>
+                    </div>
+                    <ul className="flex lg:flex-col justify-center items-center lg:gap-8 w-full text-base">
+                        <li className="w-full flex justify-center lg:justify-start items-center"><NavLink className="flex justify-center items-center gap-1" to={'/main/profile'}><Icon iconName="IdentificationCard" weight={true} size={30} />My account</NavLink></li>
+                        <li className="w-full flex justify-center lg:justify-start items-center"><NavLink className="flex justify-center items-center gap-1" to={'/main/bots'}><Icon iconName="Robot" weight={true} size={30} />Bots</NavLink></li>
+                        <li className="w-full flex justify-center lg:justify-start items-center"><NavLink className="flex justify-center items-center gap-1" to={'/main/billing'}><Icon iconName="Wallet" weight={true} size={30} />Billing</NavLink></li>
                     </ul>
-                    <Outlet />
                 </div>
+                <Outlet />
             </MainBackground>
             : isLogged === 'false'
                 ? <Navigate to="/" replace />

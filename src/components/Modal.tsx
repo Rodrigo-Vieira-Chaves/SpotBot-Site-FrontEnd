@@ -28,7 +28,7 @@ function Modal (props: ModalData)
             {
                 showModal &&
                 <div className="absolute left-0 top-0 w-screen h-screen bg-black/50">
-                    <div className={`flex flex-col justify-center items-center w-1/4 m-auto bg-[#23292C] border-4 border-[#41525A] p-5
+                    <div className={`flex flex-col justify-center items-center w-full sm:w-1/2 lg:w-1/4 m-auto bg-[#23292C] border-4 border-[#41525A] p-5
                                      transform transition-all translate-y-3/4 ease-in-out duration-1000 ${props.className ? props.className : ''}`}>
                         <h2 className={'text-[#7194FF] font-bold text-2xl text-center'}>{props.title}</h2>
                         <p className="text-base font-bold text-center mt-6">{props.description}</p>

@@ -7,7 +7,7 @@ interface PropsType
 function FormsBox (props?: PropsType)
 {
     return (
-        <div className={`w-full sm:w-1/2 lg:w-1/4 flex flex-col justify-center items-center ${props?.className ? props.className : ''}`}>
+        <div className={`w-full sm:w-1/2 lg:w-1/4 flex flex-col justify-start items-center gap-2 ${props?.className ? props.className : ''}`}>
             {props?.children}
         </div>
     );

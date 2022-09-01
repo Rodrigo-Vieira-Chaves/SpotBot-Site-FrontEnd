@@ -7,7 +7,6 @@ import { InputReferenceType } from '../components/Inputs/InputReferenceType';
 import { LoginInput } from '../components/Inputs/LoginInput';
 import { MainBackground } from '../components/MainBackground';
 import { PasswordInput } from '../components/Inputs/PasswordInput';
-import { SpotBotSiteLogo } from '../components/Images/SpotBotSiteLogo';
 import { Title } from '../components/Title';
 import { UserDataContext } from '../providers/UserDataProvider';
 import { authenticateLogin } from '../apiCalls/authenticateLogin';
@@ -59,11 +58,10 @@ function LoginPage ()
     }
 
     return (
-        <MainBackground className="justify-between">
+        <MainBackground className="overflow-y-auto">
             <Modal reference={modalRef} title={modalData.title} isOneButtonModal={modalData.isOneButtonModal} confirmButtonLabel={modalData.confirmButtonLabel}
                 description={modalData.description} onClick={modalData.onClick} />
-            <SpotBotSiteLogo />
-            <div className="flex justify-center items-center w-full mt-10">
+            <div className="flex justify-center items-center w-full h-full">
                 <FormsBox>
                     <Title className="mb-10" title="Login"/>
                     <LoginInput className="mb-5" reference={nameInputRef} placeholder="Login" />
