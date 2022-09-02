@@ -1,3 +1,4 @@
+import { BillingHeader } from '../components/Tables/BillingHeader';
 import { Button } from '../components/Button';
 import { OutletBackground } from '../components/OutletBackground';
 
@@ -5,14 +6,7 @@ function BillingPage ()
 {
     return (
         <OutletBackground className="overflow-y-auto leading-[100%] gap-6">
-            <div className="w-full flex justify-around items-center text-center">
-                <div className="w-[15%] h-full text-[#7194FF] font-bold text-[0.625rem] sm:text-base lg:text-2xl break-words">ID</div>
-                <div className="w-[15%] h-full text-[#7194FF] font-bold text-[0.625rem] sm:text-base lg:text-2xl break-words">Status</div>
-                <div className="w-[15%] h-full text-[#7194FF] font-bold text-[0.625rem] sm:text-base lg:text-2xl break-words">Period</div>
-                <div className="w-[15%] h-full text-[#7194FF] font-bold text-[0.625rem] sm:text-base lg:text-2xl break-words">Due Date</div>
-                <div className="w-[15%] h-full text-[#7194FF] font-bold text-[0.625rem] sm:text-base lg:text-2xl break-words">Invoice Value</div>
-                <div className="w-[15%] h-full"></div>
-            </div>
+            <BillingHeader />
             <div className="w-full flex flex-col justify-center items-center gap-3">
                 <div className="w-full h-24 flex justify-around items-center text-center bg-[#41525A] p-2.5">
                     <div className="w-[15%] h-full text-[0.625rem] sm:text-base flex justify-center items-center break-all">#1</div>

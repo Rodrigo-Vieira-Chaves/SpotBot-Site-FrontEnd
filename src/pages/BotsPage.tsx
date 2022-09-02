@@ -1,3 +1,5 @@
+import { BotsHeader } from '../components/Tables/BotsHeader';
+import { BotsTable } from '../components/Tables/BotsTable';
 import { Button } from '../components/Button';
 import { OutletBackground } from '../components/OutletBackground';
 
@@ -5,15 +7,9 @@ function BotsPage ()
 {
     return (
         <OutletBackground className="overflow-y-auto leading-[100%] gap-6">
-            <div className="w-full flex justify-around items-center text-center">
-                <div className="w-[15%] h-full text-[#7194FF] font-bold text-[0.625rem] sm:text-base lg:text-2xl break-words">Bot Name</div>
-                <div className="w-[15%] h-full text-[#7194FF] font-bold text-[0.625rem] sm:text-base lg:text-2xl break-words">Status</div>
-                <div className="w-[15%] h-full text-[#7194FF] font-bold text-[0.625rem] sm:text-base lg:text-2xl break-words">Exchange</div>
-                <div className="w-[15%] h-full text-[#7194FF] font-bold text-[0.625rem] sm:text-base lg:text-2xl break-words">Account</div>
-                <div className="w-[15%] h-full text-[#7194FF] font-bold text-[0.625rem] sm:text-base lg:text-2xl break-words">Profit</div>
-                <div className="w-[15%] h-full"></div>
-            </div>
-            <div className="w-full flex flex-col justify-center items-center gap-3">
+            <BotsHeader />
+            <BotsTable />
+            {/* <div className="w-full flex flex-col justify-center items-center gap-3">
                 <div className="w-full h-24 flex justify-around items-center text-center bg-[#41525A] p-2.5">
                     <div className="w-[15%] h-full text-[0.625rem] sm:text-base flex justify-center items-center break-all">joe@ftx.mainaccount</div>
                     <div className="w-[15%] h-full font-bold text-[#28C724] text-[0.625rem] sm:text-base flex justify-center items-center break-words">ACTIVE</div>
@@ -57,7 +53,7 @@ function BotsPage ()
                     </div>
                 </div>
                 <div className="w-24 h-24 bg-[#41525A] rounded-full flex justify-center items-start text-[#7194FF] font-bold text-7xl">+</div>
-            </div>
+            </div> */}
         </OutletBackground>
     );
 }

@@ -1,11 +1,10 @@
-import { Modal, ModalData, ModalReferenceType } from '../components/Modal';
+import { ModalReferenceType, Modal, ModalData } from '../components/Modal';
 import { useContext, useRef, useState } from 'react';
 import { Button } from '../components/Button';
 import { FormsBox } from '../components/FormsBox';
 import { InputReferenceType } from '../components/Inputs/InputReferenceType';
 import { OutletBackground } from '../components/OutletBackground';
 import { PasswordInput } from '../components/Inputs/PasswordInput';
-import { Title } from '../components/Title';
 import { UserDataContext } from '../providers/UserDataProvider';
 import { changePassword } from '../apiCalls/changePassword';
 

@@ -1,6 +1,6 @@
-import { IconContext, IdentificationCard, Robot, UserCircle, Wallet } from 'phosphor-react';
+import { IconContext, IdentificationCard, PlusCircle, Robot, UserCircle, Wallet } from 'phosphor-react';
 
-type IconName = 'IdentificationCard' | 'UserCircle' | 'Robot' | 'Wallet';
+type IconName = 'IdentificationCard' | 'UserCircle' | 'PlusCircle' | 'Robot' | 'Wallet';
 
 interface PropTypes
 {
@@ -15,8 +15,9 @@ const icons =
 {
     IdentificationCard: <IdentificationCard />,
     UserCircle: <UserCircle />,
+    PlusCircle: <PlusCircle />,
     Robot: <Robot />,
-    Wallet: <Wallet />,
+    Wallet: <Wallet />
 };
 
 function Icon (props: PropTypes)

@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components{
+    .botRowPart {
+        @apply w-[15%] h-full text-[0.625rem] sm:text-base flex justify-center items-center break-words;
+    }
+}
