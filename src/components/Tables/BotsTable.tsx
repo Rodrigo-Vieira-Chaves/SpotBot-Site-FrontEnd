@@ -1,34 +1,31 @@
 import { BotCreationModal, BotCreationModalReferenceType } from '../BotCreationModal';
 import { Modal, ModalData, ModalReferenceType } from '../Modal';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BotRow } from './BotRow';
 import { Icon } from '../Icon';
-import { UserDataContext } from '../../providers/UserDataProvider';
 import { createBot } from '../../apiCalls/createBot';
+import { deleteBot } from '../../apiCalls/deleteBot';
 import { getUserBotsList } from '../../apiCalls/getUserBotsList';
 
 function BotsTable ()
 {
-    const userInfo = useContext(UserDataContext);
-
     const modalRef = useRef({} as ModalReferenceType);
+    const [ modalData, setModalData ] = useState({} as ModalData);
     const creationModalRef = useRef({} as BotCreationModalReferenceType);
 
-    const [ modalData, setModalData ] = useState({} as ModalData);
+    const [ bots, setBots ] = useState([] as JSX.Element[]);
+    const [ tableState, setTableState ] = useState(false);
 
-    const [ bots, setBots ] = useState([] as React.ReactNode[]);
-
-    async function populateBotTable ()
+    async function deleteBotRow (exchange: string, account: string)
     {
-        const bots = await getUserBotsList();
-        const botsList: React.ReactNode[] = [];
+        const result = await deleteBot(exchange, account);
 
-        if (!bots.success)
+        if (!result.success)
         {
             setModalData(
                 {
                     title: 'Error',
-                    description: bots.message,
+                    description: result.message,
                     confirmButtonLabel: 'Ok',
                     isOneButtonModal: true,
                 }
@@ -39,12 +36,10 @@ function BotsTable ()
             return;
         }
 
-        for (const bot of bots.data) botsList.push(<BotRow key={bot.botID} userLogin={userInfo.userLogged} exchange={bot.exchange} accountName={bot.account} />);
-
-        setBots(botsList);
+        setTableState(!tableState);
     }
 
-    async function executeBotCreation ()
+    async function createBotRow ()
     {
         const apiKey = creationModalRef.current.apiKeyInputRef.current;
         const apiSecret = creationModalRef.current.apiSecretInputRef.current;
@@ -75,17 +70,48 @@ function BotsTable ()
         }
 
         creationModalRef.current.setShowModal(false);
-        populateBotTable();
+        setTableState(!tableState);
+    }
+
+    async function updateBotTable ()
+    {
+        const result = await getUserBotsList();
+
+        if (result.code === 404) return;
+
+        if (!result.success)
+        {
+            setModalData(
+                {
+                    title: 'Error',
+                    description: result.message,
+                    confirmButtonLabel: 'Ok',
+                    isOneButtonModal: true,
+                }
+            );
+
+            modalRef.current.setShowModal(true);
+
+            return;
+        }
+
+        const botsList: JSX.Element[] = [];
+        result.data = Array.isArray(result.data) ? result.data : [ result.data ];
+
+        // eslint-disable-next-line max-len
+        for (const bot of result.data) botsList.push(<BotRow key={bot.botName} botName={bot.botName} botStatus={bot.status} exchange={bot.exchange} accountName={bot.account} onDeleteClick={deleteBotRow} />);
+
+        setBots(botsList);
     }
 
     useEffect(() =>
     {
-        populateBotTable();
-    }, []);
+        updateBotTable();
+    }, [ tableState ]);
 
     return (
         <div className="w-full flex flex-col justify-center items-center gap-3">
-            <BotCreationModal reference={creationModalRef} onClick={executeBotCreation} />
+            <BotCreationModal reference={creationModalRef} onClick={createBotRow} />
             <Modal reference={modalRef} title={modalData.title} isOneButtonModal={modalData.isOneButtonModal} confirmButtonLabel={modalData.confirmButtonLabel}
                 description={modalData.description} onClick={modalData.onClick} />
             {bots}

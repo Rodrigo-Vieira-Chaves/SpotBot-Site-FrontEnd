@@ -1,4 +1,6 @@
-async function updateBotStatus (exchange: string, account: string, status: string)
+type BotStatus = 'IDLE' | 'ACTIVE' | 'STOP after trade' | 'Waiting Payment';
+
+async function updateBotStatus (exchange: string, account: string, status: BotStatus)
 {
     const body =
     {
@@ -11,6 +13,7 @@ async function updateBotStatus (exchange: string, account: string, status: strin
         'http://localhost:8000/bots',
         {
             method: 'PUT',
+            credentials: 'include',
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         }
@@ -22,3 +25,4 @@ async function updateBotStatus (exchange: string, account: string, status: strin
 }
 
 export { updateBotStatus };
+export type { BotStatus };

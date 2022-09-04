@@ -34,12 +34,12 @@ function MainPage ()
         isLogged === 'true'
             ? <MainBackground className="lg:flex-row gap-8">
                 <div className="flex flex-col w-full lg:w-1/5 gap-8 lg:gap-16">
-                    <div className="flex lg:flex-col justify-between items-center w-full h-full gap-2">
+                    <div className="flex lg:flex-col justify-between items-center w-full h-full gap-4">
                         <div className="w-1/3 lg:hidden"></div>
                         <Title title={`${userInfo.userLogged}`} />
                         <div className="flex justify-center items-center gap-1 w-1/3 lg:w-full" onClick={executeLogout}>
-                            <LogoutIcon className="w-7 h-7" />
-                            <p>Logout</p>
+                            <LogoutIcon className="lg:w-7 lg:h-7" />
+                            <p className="text-xs">Logout</p>
                         </div>
                     </div>
                     <ul className="flex lg:flex-col justify-center items-center lg:gap-8 w-full text-base">

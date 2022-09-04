@@ -8,7 +8,7 @@ interface PropTypes
 function LogoutIcon (props?: PropTypes)
 {
     return (
-        <img className={`w-14 h-14 ${props?.className ? props.className : ''}`} src={logout_icon} alt="Logout-image" />
+        <img className={`w-4 h-4 ${props?.className ? props.className : ''}`} src={logout_icon} alt="Logout-image" />
     );
 }
 
