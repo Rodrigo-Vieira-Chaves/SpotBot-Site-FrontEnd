@@ -6,9 +6,12 @@ import { Icon } from '../Icon';
 import { createBot } from '../../apiCalls/createBot';
 import { deleteBot } from '../../apiCalls/deleteBot';
 import { getUserBotsList } from '../../apiCalls/getUserBotsList';
+import { useNavigate } from 'react-router-dom';
 
 function BotsTable ()
 {
+    const navigate = useNavigate();
+
     const modalRef = useRef({} as ModalReferenceType);
     const [ modalData, setModalData ] = useState({} as ModalData);
     const creationModalRef = useRef({} as BotCreationModalReferenceType);
@@ -20,6 +23,7 @@ function BotsTable ()
     {
         const result = await deleteBot(exchange, account);
 
+        if (result.code === 401) navigate('/');
         if (!result.success)
         {
             setModalData(
@@ -53,6 +57,7 @@ function BotsTable ()
 
         const result = await createBot('FTX', subAccount.value, apiKey.value, apiSecret.value);
 
+        if (result.code === 401) navigate('/');
         if (!result.success)
         {
             setModalData(
@@ -77,7 +82,13 @@ function BotsTable ()
     {
         const result = await getUserBotsList();
 
-        if (result.code === 404) return;
+        if (result.code === 401) navigate('/');
+        if (result.code === 404)
+        {
+            setBots([] as JSX.Element[]);
+
+            return;
+        }
 
         if (!result.success)
         {
@@ -95,7 +106,7 @@ function BotsTable ()
             return;
         }
 
-        const botsList: JSX.Element[] = [];
+        const botsList = [] as JSX.Element[];
         result.data = Array.isArray(result.data) ? result.data : [ result.data ];
 
         // eslint-disable-next-line max-len

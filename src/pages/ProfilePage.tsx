@@ -1,4 +1,4 @@
-import { ModalReferenceType, Modal, ModalData } from '../components/Modal';
+import { Modal, ModalData, ModalReferenceType } from '../components/Modal';
 import { useContext, useRef, useState } from 'react';
 import { Button } from '../components/Button';
 import { FormsBox } from '../components/FormsBox';
@@ -7,9 +7,11 @@ import { OutletBackground } from '../components/OutletBackground';
 import { PasswordInput } from '../components/Inputs/PasswordInput';
 import { UserDataContext } from '../providers/UserDataProvider';
 import { changePassword } from '../apiCalls/changePassword';
+import { useNavigate } from 'react-router-dom';
 
 function ProfilePage ()
 {
+    const navigate = useNavigate();
     const userInfo = useContext(UserDataContext);
 
     const modalRef = useRef({} as ModalReferenceType);
@@ -36,6 +38,7 @@ function ProfilePage ()
 
         const result = await changePassword(userInfo.userLogged, currentPasswordInputRef.current.value, newPasswordInputRef.current.value );
 
+        if (result.code === 401) navigate('/');
         if (result.success)
         {
             setModalData(
