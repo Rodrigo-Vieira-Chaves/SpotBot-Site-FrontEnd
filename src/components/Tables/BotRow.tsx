@@ -110,10 +110,12 @@ function BotRow (props: PropsType)
             <div className="botRowPart break-all">{account}</div>
             <div className="botRowPart break-all">0%</div>
             <div className="botRowPart flex-col gap-2">
-                {status === 'Idle' ? buttonsWhenIDLE
-                    : status === 'Active' ? buttonsWhenACTIVE
-                        : status === 'Stop after Trade' ? buttonsWhenSTOPAfterTRADE
-                            : ''}
+                {
+                    status === 'Idle' ? buttonsWhenIDLE
+                        : status === 'Active' ? buttonsWhenACTIVE
+                            : status === 'Stop after Trade' ? buttonsWhenSTOPAfterTRADE
+                                : ''
+                }
             </div>
         </div>
     );

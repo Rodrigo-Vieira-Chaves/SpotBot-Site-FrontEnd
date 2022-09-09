@@ -1,4 +1,4 @@
-type BotStatus = 'Idle' | 'Active' | 'Stop after Trade' | 'Waiting Payment';
+type BotStatus = 'Idle' | 'Active' | 'Stop after Trade' | 'Waiting Payment' | 'Error';
 
 async function updateBotStatus (exchange: string, account: string, status: BotStatus)
 {
