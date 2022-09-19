@@ -1,9 +1,12 @@
+/* eslint-disable max-len */
 /* eslint-disable no-negated-condition */
 /* eslint-disable no-nested-ternary */
-import { BotStatus, updateBotStatus } from '../../apiCalls/updateBotStatus';
 import { Modal, ModalData, ModalReferenceType } from '../Modal';
 import { useRef, useState } from 'react';
+import { BotStatus } from '../../apiCalls/BotStatus';
 import { Button } from '../Button';
+import { startBot } from '../../apiCalls/startBot';
+import { stopBotOrStopAfterTrade } from '../../apiCalls/stopBotOrStopAfterTrade';
 
 interface ButtonsConfig
 {
@@ -29,14 +32,24 @@ function BotRow (props: PropsType)
 {
     const modalRef = useRef({} as ModalReferenceType);
     const [ modalData, setModalData ] = useState({} as ModalData);
-    const [ status, setStatus ] = useState(props.botStatus ? props.botStatus : 'IDLE' as BotStatus);
+    const [ rowStatus, setRowStatus ] = useState(props.botStatus ? props.botStatus : BotStatus.IDLE);
+    const [ buttonLoading, setButtonLoading ] = useState(false);
 
     const account = props.accountName ? props.accountName : 'main';
-    const statusTextColor = status === 'Active' ? 'text-[#28C724]' : status !== 'Waiting Payment' ? 'text-[#DA4C4C]' : '';
+    const statusTextColor = rowStatus === 'Active' ? 'text-[#28C724]' : rowStatus !== 'Waiting Payment' ? 'text-[#DA4C4C]' : '';
 
-    async function updateBotRow (status: BotStatus)
+    async function updateBotRow (status?: BotStatus.IDLE | BotStatus.STOP_AFTER_TRADE)
     {
-        const result = await updateBotStatus('FTX', account, status);
+        if (buttonLoading) return;
+
+        let result = undefined;
+
+        setButtonLoading(true);
+
+        if (status) result = await stopBotOrStopAfterTrade('FTX', account, status);
+        else result = await startBot('FTX', account);
+
+        setButtonLoading(false);
 
         if (!result.success)
         {
@@ -54,15 +67,15 @@ function BotRow (props: PropsType)
             return;
         }
 
-        setStatus(result.data.status);
+        setRowStatus(result.data.status);
     }
 
     function makeButtons (params: ButtonsConfig)
     {
         return (
             <>
-                <Button className={`w-[100%] h-1/2 bg-[${params.firstColor}] text-[0.625rem] sm:text-base leading-[100%]`} label={params.firstLabel} onClick={params.firstOnClick} />
-                <Button className={`w-[100%] h-1/2 bg-[${params.secondColor}] text-[0.625rem] sm:text-base leading-[100%]`} label={params.secondLabel} onClick={params.secondOnClick} />
+                <Button className={`w-[100%] h-1/2 bg-[${params.firstColor}] text-[0.625rem] sm:text-base leading-[100%]`} label={buttonLoading ? '...' : params.firstLabel} onClick={params.firstOnClick} />
+                <Button className={`w-[100%] h-1/2 bg-[${params.secondColor}] text-[0.625rem] sm:text-base leading-[100%]`} label={buttonLoading ? '...' : params.secondLabel} onClick={params.secondOnClick} />
             </>
         );
     }
@@ -71,7 +84,7 @@ function BotRow (props: PropsType)
         {
             firstColor: '#28C724',
             firstLabel: 'Start',
-            firstOnClick: () => updateBotRow('Active'),
+            firstOnClick: () => updateBotRow(),
             secondColor: '#7194FF',
             secondLabel: 'Delete',
             secondOnClick: () => props.onDeleteClick('FTX', account)
@@ -82,10 +95,10 @@ function BotRow (props: PropsType)
         {
             firstColor: '#DA4C4C',
             firstLabel: 'Stop',
-            firstOnClick: () => updateBotRow('Idle'),
+            firstOnClick: () => updateBotRow(BotStatus.IDLE),
             secondColor: '#DA4C4C',
             secondLabel: 'Stop after Trade',
-            secondOnClick: () => updateBotRow('Stop after Trade')
+            secondOnClick: () => updateBotRow(BotStatus.STOP_AFTER_TRADE)
         }
     );
 
@@ -93,10 +106,10 @@ function BotRow (props: PropsType)
         {
             firstColor: '#28C724',
             firstLabel: 'Active',
-            firstOnClick: () => updateBotRow('Active'),
+            firstOnClick: () => updateBotRow(),
             secondColor: '#DA4C4C',
             secondLabel: 'Stop',
-            secondOnClick: () => updateBotRow('Idle')
+            secondOnClick: () => updateBotRow(BotStatus.IDLE)
         }
     );
 
@@ -105,15 +118,15 @@ function BotRow (props: PropsType)
             <Modal reference={modalRef} title={modalData.title} isOneButtonModal={modalData.isOneButtonModal} confirmButtonLabel={modalData.confirmButtonLabel}
                 description={modalData.description} onClick={modalData.onClick} />
             <div className="botRowPart break-all">{props.botName}</div>
-            <div className={`botRowPart font-bold ${statusTextColor}`}>{status}</div>
+            <div className={`botRowPart font-bold ${statusTextColor}`}>{rowStatus}</div>
             <div className="botRowPart">{props.exchange}</div>
             <div className="botRowPart break-all">{account}</div>
             <div className="botRowPart break-all">0%</div>
             <div className="botRowPart flex-col gap-2">
                 {
-                    status === 'Idle' ? buttonsWhenIDLE
-                        : status === 'Active' ? buttonsWhenACTIVE
-                            : status === 'Stop after Trade' ? buttonsWhenSTOPAfterTRADE
+                    rowStatus === 'Idle' ? buttonsWhenIDLE
+                        : rowStatus === 'Active' ? buttonsWhenACTIVE
+                            : rowStatus === 'Stop after Trade' ? buttonsWhenSTOPAfterTRADE
                                 : ''
                 }
             </div>

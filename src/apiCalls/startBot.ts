@@ -1,16 +1,13 @@
-type BotStatus = 'Idle' | 'Active' | 'Stop after Trade' | 'Waiting Payment' | 'Error';
-
-async function updateBotStatus (exchange: string, account: string, status: BotStatus)
+async function startBot (exchange: string, account: string)
 {
     const body =
     {
         exchange,
-        account,
-        status
+        account
     };
 
     const fetchResponse = await fetch(
-        'http://localhost:8000/bots',
+        'http://localhost:8000/bots/startBot',
         {
             method: 'PUT',
             credentials: 'include',
@@ -24,5 +21,4 @@ async function updateBotStatus (exchange: string, account: string, status: BotSt
     return responseJson;
 }
 
-export { updateBotStatus };
-export type { BotStatus };
+export { startBot };
